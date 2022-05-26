@@ -2,6 +2,7 @@
 _A wrapper around JPL's REST API for the HORIZONS solar system ephemeris platform!_
 
 > **Warning**
+> 
 > This package is not affiliated **or** endorsed by NASA, JPL, Caltech, or any other organization!
 > This is an independently written package by an astrodynamics hobbyist. 
 > See the [license file](./LICENSE) for more information about code sharing and usage!
