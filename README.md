@@ -1,3 +1,7 @@
+[![Tests](https://github.com/cadojo/HORIZONSAPI.jl/workflows/Tests/badge.svg)](https://github.com/cadojo/HORIZONSAPI.jl/actions?query=workflow%3ATests)
+[![Docs](https://github.com/cadojo/HORIZONSAPI.jl/workflows/Documentation/badge.svg)](https://aperiodic.dev/HORIZONSAPI.jl)
+[![SciML Code Style](https://img.shields.io/static/v1?label=Style&message=SciML&color=9668e2&labelColor=3E474F)](https://github.com/SciML/SciMLStyle)
+
 # `HORIZONSAPI`
 _A wrapper around JPL's REST API for the HORIZONS solar system ephemeris platform!_
 

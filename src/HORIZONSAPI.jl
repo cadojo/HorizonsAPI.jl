@@ -39,7 +39,7 @@ using DocStringExtensions
     """
 
 @info """
-Boy oh boy, this is gonna be so cool when this works!
+Boy oh boy, this is gonna be so cool when it works!
 """
 
 end # module
