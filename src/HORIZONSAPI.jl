@@ -33,4 +33,8 @@ using DocStringExtensions
     $(DOCSTRING)
     """
 
+@info """
+Boy oh boy, this is gonna be so cool when this works!
+"""
+
 end # module
