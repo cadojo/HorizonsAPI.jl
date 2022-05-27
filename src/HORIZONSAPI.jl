@@ -8,9 +8,6 @@ Retrieve ephemeris data for free using JPL's REST API!
 
 # Extended Help
 
-## README
-$(README)
-
 ## License
 $(LICENSE)
 
