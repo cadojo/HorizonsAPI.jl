@@ -2,9 +2,9 @@
 Retrieve ephemeris data for free using JPL's REST API!
 
 !!! warning
-    This package is not affiliated **or** endorsed by NASA, JPL, Caltech, or any other
+    This package is not affiliated with or endorsed by NASA, JPL, Caltech, or any other
     organization! This is an independently written package by an astrodynamics hobbyist.
-    See this package's license file for more information about code sharing and usage!
+    See the `HORIZONSAPI` license file for more information about code sharing and usage!
 
 # Extended Help
 
@@ -22,24 +22,9 @@ $(EXPORTS)
 """
 module HORIZONSAPI
 
-using DocStringExtensions
+include(joinpath(@__DIR__, "DocStringSetup.jl"))
 
-@template (FUNCTIONS, METHODS, MACROS) =
-    """
-    $(SIGNATURES)
-
-    $(DOCSTRING)
-    """
-
-@template (TYPES, CONSTANTS) =
-    """
-    $(TYPEDEF)
-
-    $(DOCSTRING)
-    """
-
-@info """
-Boy oh boy, this is gonna be so cool when it works!
-"""
+include(joinpath(@__DIR__, "REST", "REST.jl"))
+import .REST
 
 end # module

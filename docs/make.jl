@@ -4,7 +4,13 @@ using HORIZONSAPI
 makedocs(
     sitename = "HORIZONSAPI",
     format = Documenter.HTML(),
-    modules = [HORIZONSAPI]
+    modules = [HORIZONSAPI, HORIZONSAPI.REST],
+    pages=[
+        "Overview" => [
+            "Getting Started" => "index.md",
+            "Docstrings" => "docstrings.md"
+        ],
+    ]
 )
 
 deploydocs(
