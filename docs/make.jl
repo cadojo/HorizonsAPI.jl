@@ -1,22 +1,15 @@
 using Documenter
-using HORIZONSAPI
+using HorizonsAPI
 
 makedocs(
-    sitename = "HORIZONSAPI",
+    sitename = "HorizonsAPI",
     format = Documenter.HTML(),
-    modules = [HORIZONSAPI, HORIZONSAPI.REST],
-    pages=[
-        "Overview" => [
-            "Getting Started" => "index.md",
-            "Docstrings" => "docstrings.md"
-        ],
-    ]
+    modules = [HorizonsAPI]
 )
 
-deploydocs(
-    target    = "build",
-    repo      = "github.com/cadojo/HORIZONSAPI.jl.git",
-    branch    = "gh-pages",
-    devbranch = "main",
-    versions  = ["stable" => "v^", "manual", "v#.#", "v#.#.#"],
-)
+# Documenter can also automatically deploy documentation to gh-pages.
+# See "Hosting Documentation" and deploydocs() in the Documenter manual
+# for more information.
+#=deploydocs(
+    repo = "<repository url>"
+)=#
