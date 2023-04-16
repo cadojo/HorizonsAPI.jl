@@ -19,6 +19,8 @@ $(IMPORTS)
 """
 module HorizonsAPI
 
+export fetch_properties, fetch_observer, fetch_vectors, fetch_spk, fetch_elements, fetch_approach
+
 import HTTP
 using DocStringExtensions
 
@@ -56,8 +58,6 @@ urlify(x::Missing) = missing
 urlify(x::Number) = "'$x'"
 urlify(x::NTuple) = """'$(replace(string(x), " " => "", "(" => "", ")" => ""))'"""
 
-
-
 """
 Common parameters, as specified by the Horizons API documentation.
 """
@@ -69,6 +69,9 @@ const COMMON_PARAMETERS = (;
     EMAIL_ADDR=missing
 )
 
+"""
+Ephemeris-specific parameters, as specified by the Horizons API documentation.
+"""
 const EPHEMERIS_PARAMETERS = (;
     CENTER="Geocentric",
     REF_PLANE="ECLIPTIC",
@@ -107,11 +110,17 @@ const EPHEMERIS_PARAMETERS = (;
     R_T_S_ONLY="NO"
 )
 
+"""
+Parameters specific to spacecraft ephemeris, as specified by the Horizons API documentation.
+"""
 const SPK_PARAMETERS = (;
     START_TIME=missing,
     STOP_TIME=missing
 )
 
+"""
+Parameters specific to close-approach requests, as specified by the Horizons API documentation.
+"""
 const APPROACH_PARAMETERS = (;
     CA_TABLE_TYPE="STANDARD",
     TCA3SG_LIMIT=14400,
@@ -119,6 +128,10 @@ const APPROACH_PARAMETERS = (;
     CALIM_PL=(0.1, 0.1, 0.1, 0.1, 1.0, 1.0, 1.0, 1.0, 0.1, 0.003)
 )
 
+"""
+Parameters specific to user-requested heliocentric osculating orbital elements, as specified
+by the Horizons API documentation.
+"""
 const ELEMENTS_PARAMETERS = (;
     OBJECT=missing,
     EPOCH=missing,
@@ -134,6 +147,10 @@ const ELEMENTS_PARAMETERS = (;
     N=missing
 )
 
+"""
+Parameters specific to small-body ephemeris requests, as specified by the Horizons API
+documentation.
+"""
 const SMALL_BODY_PARAMETERS = (;
     RAD=missing,
     H=missing,
@@ -157,37 +174,206 @@ const SMALL_BODY_PARAMETERS = (;
 )
 
 """
-Return the requested HORIZONS data.
+Given keyword arguments which map to Horizons API parameters, construct a `Vector{Pair}`
+that is compatible with the `query` keyword argument of `HTTP.get`.
 """
-function query(COMMAND; kwargs...)
-
-    options = merge(COMMON_PARAMETERS, kwargs)
-
-    if strip(uppercase(urlify(options.MAKE_EPHEM))) == "YES"
-
-        options = merge(EPHEMERIS_PARAMETERS, options)
-        type = strip(uppercase(options.EPHEM_TYPE))
-
-        if type == "SPK"
-            options = merge(SPK_PARAMETERS, options)
-        elseif type == "APPROACH"
-            options = merge(APPROACH_PARAMETERS, options)
-        elseif type == "ELEMENTS"
-            options = merge(ELEMENTS_PARAMETERS, options)
-        end
-
-    end
+function query(COMMAND; options...)
 
     options = map(pair -> pair.first => urlify(pair.second), collect(pairs(options)))
     filter!(pair -> !ismissing(pair.second), options)
     push!(options, :COMMAND => string(strip(string(COMMAND))))
 
-    response = HTTP.get(
-        ENDPOINT;
-        query=options
+    return options
+
+end
+
+
+"""
+Return a sequence of `Expr` objects which represent a `NamedTuple` with a format that is
+compatible with keyword arguments in function definitions.
+
+# Extended Help
+
+## References:
+
+- https://discourse.julialang.org/t/unpack-namedtuple-into-a-function-definition/97500/2
+"""
+function to_kwargs(parameters...)
+
+    if isempty(parameters)
+        return Expr[]
+    end
+
+    dict = merge(
+        map(collection -> Dict(pairs(collection)), parameters)...
     )
 
-    return response
+    kws = sort(collect(keys(dict)))
+    return [
+        Expr(:kw, k, dict[k])
+        for k in kws
+    ]
+
 end
+
+function to_kwvals(parameters...)
+
+    if isempty(parameters)
+        return Expr[]
+    end
+
+    dict = merge(
+        map(collection -> Dict(pairs(collection)), parameters)...
+    )
+
+
+    kws = sort(collect(keys(dict)))
+    return [
+        Expr(:(=), k, k)
+        for k in kws
+    ]
+end
+
+@eval begin
+
+    """
+    Return the requested HORIZONS data in the form of an `HTTP.Response`.
+    """
+    function request(COMMAND; file=nothing, $(
+        to_kwargs(
+            COMMON_PARAMETERS, EPHEMERIS_PARAMETERS, SPK_PARAMETERS,
+            APPROACH_PARAMETERS, ELEMENTS_PARAMETERS
+        )...)
+    )
+
+        common = (; $(to_kwvals(COMMON_PARAMETERS)...))
+        ephem = (; $(to_kwvals(EPHEMERIS_PARAMETERS)...))
+        spk = (; $(to_kwvals(SPK_PARAMETERS)...))
+        approach = (; $(to_kwvals(APPROACH_PARAMETERS)...))
+        elements = (; $(to_kwvals(ELEMENTS_PARAMETERS)...))
+
+        options = common
+
+        if strip(uppercase(urlify(options.MAKE_EPHEM))) == "YES"
+
+            options = merge(options, ephem)
+            type = strip(uppercase(options.EPHEM_TYPE))
+
+            if type == "SPK"
+                options = merge(options, spk)
+            elseif type == "APPROACH"
+                options = merge(options, approach)
+            elseif type == "ELEMENTS"
+                options = merge(options, elements)
+            end
+
+        end
+
+        response = HTTP.get(
+            ENDPOINT;
+            query=query(COMMAND; options...)
+        )
+
+        if !isnothing(file)
+            write(file, String(response.body))
+        end
+
+        return response
+
+    end
+
+    """
+    Fetch physical attribute data for the body specified by `COMMAND`.
+    """
+    function fetch_properties(
+        COMMAND; file=nothing, $(
+            to_kwargs(Base.structdiff(COMMON_PARAMETERS, NamedTuple{(:MAKE_EPHEM, :OBJ_DATA)}))...
+        )
+    )
+        options = (; $(to_kwvals(Base.structdiff(COMMON_PARAMETERS, NamedTuple{(:MAKE_EPHEM, :OBJ_DATA)}))...))
+        return request(COMMAND; file=file, MAKE_EPHEM=false, OBJ_DATA=true, options...)
+    end
+
+    """
+    Fetch planetary ephemeris for the body specified by `COMMAND`, in the
+    `EPHEM_TYPE="OBSERVER"` format.
+    """
+    function fetch_observer(
+        COMMAND; file=nothing, $(
+            to_kwargs(
+                Base.structdiff(COMMON_PARAMETERS, NamedTuple{(:MAKE_EPHEM, :OBJ_DATA, :EPHEM_TYPE)}),
+                EPHEMERIS_PARAMETERS
+            )...
+        )
+    )
+        options = (; $(to_kwvals(Base.structdiff(COMMON_PARAMETERS, NamedTuple{(:MAKE_EPHEM, :OBJ_DATA, :EPHEM_TYPE)}), EPHEMERIS_PARAMETERS)...))
+        return request(COMMAND; file=file, MAKE_EPHEM=true, OBJ_DATA=false, EPHEM_TYPE="OBSERVER", options...)
+    end
+
+    """
+    Fetch planetary ephemeris for the body specified by `COMMAND`, in the
+    `EPHEM_TYPE="VECTORS"` format.
+    """
+    function fetch_vectors(
+        COMMAND; file=nothing, $(
+            to_kwargs(
+                Base.structdiff(COMMON_PARAMETERS, NamedTuple{(:MAKE_EPHEM, :OBJ_DATA, :EPHEM_TYPE)}),
+                EPHEMERIS_PARAMETERS
+            )...
+        )
+    )
+        options = (; $(to_kwvals(Base.structdiff(COMMON_PARAMETERS, NamedTuple{(:MAKE_EPHEM, :OBJ_DATA, :EPHEM_TYPE)}), EPHEMERIS_PARAMETERS)...))
+        return request(COMMAND; file=file, MAKE_EPHEM=true, OBJ_DATA=false, EPHEM_TYPE="VECTORS", options...)
+    end
+
+    """
+    Fetch planetary ephemeris for the body specified by `COMMAND`, in the
+    `EPHEM_TYPE="SPK"` format.
+    """
+    function fetch_spk(
+        COMMAND; file=nothing, $(
+            to_kwargs(
+                Base.structdiff(COMMON_PARAMETERS, NamedTuple{(:MAKE_EPHEM, :OBJ_DATA, :EPHEM_TYPE)}),
+                SPK_PARAMETERS
+            )...
+        )
+    )
+        options = (; $(to_kwvals(Base.structdiff(COMMON_PARAMETERS, NamedTuple{(:MAKE_EPHEM, :OBJ_DATA, :EPHEM_TYPE)}), SPK_PARAMETERS)...))
+        return request(COMMAND; file=file, MAKE_EPHEM=true, OBJ_DATA=false, EPHEM_TYPE="SPK", options...)
+    end
+
+    """
+    Fetch planetary ephemeris for the body specified by `COMMAND`, in the
+    `EPHEM_TYPE="APPROACH"` format.
+    """
+    function fetch_approach(
+        COMMAND; file=nothing, $(
+            to_kwargs(
+                Base.structdiff(COMMON_PARAMETERS, NamedTuple{(:MAKE_EPHEM, :OBJ_DATA, :EPHEM_TYPE)}),
+                APPROACH_PARAMETERS
+            )...
+        )
+    )
+        options = (; $(to_kwvals(Base.structdiff(COMMON_PARAMETERS, NamedTuple{(:MAKE_EPHEM, :OBJ_DATA, :EPHEM_TYPE)}), APPROACH_PARAMETERS)...))
+        return request(COMMAND; file=file, MAKE_EPHEM=true, OBJ_DATA=false, EPHEM_TYPE="APPROACH", options...)
+    end
+
+    """
+    Fetch planetary ephemeris for the body specified by `COMMAND`, in the
+    `EPHEM_TYPE="ELEMENTS"` format.
+    """
+    function fetch_elements(
+        COMMAND; file=nothing, $(
+            to_kwargs(
+                Base.structdiff(COMMON_PARAMETERS, NamedTuple{(:MAKE_EPHEM, :OBJ_DATA, :EPHEM_TYPE)}),
+                ELEMENTS_PARAMETERS
+            )...
+        )
+    )
+        options = (; $(to_kwvals(Base.structdiff(COMMON_PARAMETERS, NamedTuple{(:MAKE_EPHEM, :OBJ_DATA, :EPHEM_TYPE)}), ELEMENTS_PARAMETERS)...))
+        return request(COMMAND; file=file, MAKE_EPHEM=true, OBJ_DATA=false, EPHEM_TYPE="ELEMENTS", options...)
+    end
+end
+
 
 end # module HorizonsAPI
