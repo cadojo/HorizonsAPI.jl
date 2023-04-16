@@ -8,6 +8,9 @@ DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 Term = "22787eb5-b846-44ae-b979-8e399b8463ab"
 
+[compat]
+Term = "2"
+
 [extras]
 Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
