@@ -10,7 +10,8 @@ HORIZONS. Hooks into [`DataFrames`](https://dataframes.juliadata.org/stable/)
 and [`Interpolations`](http://juliamath.github.io/Interpolations.jl/stable/) are
 also in-work.
 
-!!! warning More documentation will come, but for now, `HorizonsAPI` only has
+!!! warning 
+    More documentation will come, but for now, `HorizonsAPI` only has
     humble [docstrings](docstrings)! For more information, take a look at the
     project's [GitHub repository](https://github.com/cadojo/HorizonsAPI.jl/). There,
     and in docstrings, you'll find a recurring warning which is reiterated here:
