@@ -10,11 +10,12 @@ Term = "22787eb5-b846-44ae-b979-8e399b8463ab"
 
 [compat]
 HTTP = "1"
+Term = "2"
 
 [extras]
+Debugger = "31a5f54b-26ea-5ae9-a837-f05ce5417438"
 Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-Debugger = "31a5f54b-26ea-5ae9-a837-f05ce5417438"
 
 [targets]
 test = ["Test"]
