@@ -42,11 +42,12 @@ package provides an interface to the HORIZONS REST API.
 
 ## Vision
 
-Actually, this package will provide _two_ interfaces to the HORIZONS REST API! A
-precise interace, which matches the syntax of the requests described in the
-HORIZONS [documentation](https://ssd-api.jpl.nasa.gov/doc/horizons.html), will
-be provided. In addition, a more Julian syntax for ephemeris downloading and
-processing will be provided in a separate interface.
+This package matches the precise interace, which matches the syntax of the
+requests described in the HORIZONS
+[documentation](https://ssd-api.jpl.nasa.gov/doc/horizons.html). In addition, a
+more Julian syntax for ephemeris downloading and processing will be provided in
+a separate interface:
+[`HorizonsEphemeris.jl`](https://github.com/cadojo/HorizonsEphemeris.jl).
 
 ## Credits
 
