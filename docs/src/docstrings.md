@@ -6,5 +6,5 @@ _All docstrings!_
 Modules = [
     HorizonsAPI,
 ]
-Order = [:module, :type, :function]
+Order = [:module, :type, :function, :constant]
 ```

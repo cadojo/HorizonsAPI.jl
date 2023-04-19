@@ -8,7 +8,7 @@ development is complete, this package will allow you to download physical
 attribute information, position and velocity data, binary files, and more from
 HORIZONS. Hooks into [`DataFrames`](https://dataframes.juliadata.org/stable/)
 and [`Interpolations`](http://juliamath.github.io/Interpolations.jl/stable/) are
-also in-work.
+also in-work as part of a separate package: `HorizonsEphemeris.jl`.
 
 !!! warning 
     More documentation will come, but for now, `HorizonsAPI` only has

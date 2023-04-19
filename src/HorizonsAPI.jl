@@ -287,10 +287,10 @@ end
     """
     function fetch_properties(
         COMMAND; file=nothing, $(
-            to_kwargs(Base.structdiff(COMMON_PARAMETERS, NamedTuple{(:MAKE_EPHEM, :OBJ_DATA)}))...
+            to_kwargs(Base.structdiff(COMMON_PARAMETERS, NamedTuple{(:MAKE_EPHEM, :EPHEM_TYPE, :OBJ_DATA)}))...
         )
     )
-        options = (; $(to_kwvals(Base.structdiff(COMMON_PARAMETERS, NamedTuple{(:MAKE_EPHEM, :OBJ_DATA)}))...))
+        options = (; $(to_kwvals(Base.structdiff(COMMON_PARAMETERS, NamedTuple{(:MAKE_EPHEM, :EPHEM_TYPE, :OBJ_DATA)}))...))
         return request(COMMAND; file=file, MAKE_EPHEM=false, OBJ_DATA=true, options...)
     end
 
