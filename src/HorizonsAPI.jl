@@ -50,7 +50,9 @@ The one exception here is the method which takes an argument of type `Missing`; 
 simply returns the singleton value `missing` to the option to be filtered out before the
 query is sent.
 """
-urlify(x) = !all(isletter, x) ? "'$x'" : string(x)
+urlify(x) = string(x)
+urlify(x::AbstractVector) = urlify.(x)
+urlify(x::AbstractString) = !all(isletter, x) ? "'$x'" : string(x)
 
 urlify(x::Bool) = x ? "YES" : "NO"
 urlify(x::Nothing) = "NONE"
