@@ -44,3 +44,14 @@ end
     @test strip(response) == strip(regression)
 
 end
+
+@testset "Discrete" begin
+
+    times = [2.4333895068359375e6, 2.4516520068359375e6, 2.4607832568359375e6, 2.4425207568359375e6]
+    response = fetch_vectors(
+        399; TLIST=times, format="text", CSV_FORMAT=true
+    )
+
+    @test response.status == 200
+
+end
