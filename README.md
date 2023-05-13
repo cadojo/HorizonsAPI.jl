@@ -40,13 +40,20 @@ is **also** described in the HORIZONS
 [documentation](https://ssd-api.jpl.nasa.gov/doc/horizons.html). This Julia
 package provides an interface to the HORIZONS REST API.
 
-## Vision
+## Limitations
+
+Note that JPL Horizons ephemeris accuracy for major planetary bodies in the
+solar system
+[may have errors larger than 1000km](https://ssd.jpl.nasa.gov/horizons/manual.html#limits)
+at some times!
+
+## Context
 
 This package matches the precise interace, which matches the syntax of the
 requests described in the HORIZONS
 [documentation](https://ssd-api.jpl.nasa.gov/doc/horizons.html). In addition, a
-more Julian syntax for ephemeris downloading and processing will be provided in
-a separate interface:
+more Julian syntax for ephemeris downloading and processing is provided in a
+separate interface:
 [`HorizonsEphemeris.jl`](https://github.com/cadojo/HorizonsEphemeris.jl).
 
 ## Credits
