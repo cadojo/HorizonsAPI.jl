@@ -9,14 +9,14 @@ these keyword arguments are specified precisely in the signature of each
 tab-completion-supporting IDE, and view all options that are available for each
 individual command.
 
-![](../img/tab-completion.png)
+![](img/tab-completion.png)
 
 ## Examples
 
 Take a look at each of the following examples for ideas about how to use the
 HORIZONS REST API from within Julia.
 
-### Fetch Cartesian State Data
+### Fetch Cartesian States
 
 ```@example
 using HorizonsAPI
@@ -27,5 +27,18 @@ fetch_vectors(
     STOP_TIME = "2025-01-01",
     STEP_SIZE = "1d", # one day
     CENTER = "@ssb", # solar system barycenter
+    format = "text", # the "text" format is most useful; a minimal "json" format is also available
+)
+```
+
+### Fetch Orbital Elements
+
+```@example
+using HorizonsAPI
+
+fetch_elements(
+    "APOPHIS";
+    EPOCH = "J2000",
+    format = "text",
 )
 ```

@@ -7,8 +7,8 @@ makedocs(
     modules=[HorizonsAPI],
     pages=[
         "Overview" => "index.md",
-        "Examples" => "getting-started/index.md",
-        "Reference" => "reference/index.md",
+        "Examples" => "getting-started.md",
+        "Reference" => "reference.md",
     ]
 )
 

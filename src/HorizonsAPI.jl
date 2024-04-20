@@ -5,10 +5,6 @@ Interact with the JPL HORIZONS REST API.
 
 $(README)
 
-## License
-
-$(LICENSE)
-
 ## Exports
 
 $(EXPORTS)
