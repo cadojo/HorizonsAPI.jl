@@ -6,10 +6,9 @@ This project aims to implement the publicly accessible REST API for JPL's
 [HORIZONS](https://ssd-api.jpl.nasa.gov/horizons.html) ephemeris platform. Once
 development is complete, this package will allow you to download physical
 attribute information, position and velocity data, binary files, and more from
-HORIZONS. Hooks into [`DataFrames`](https://dataframes.juliadata.org/stable/)
-and [`Interpolations`](http://juliamath.github.io/Interpolations.jl/stable/) are
-also in-work as part of a separate package: `HorizonsEphemeris.jl`.
+HORIZONS.
 
+<div> <!-- Block around admonition tells auto-formatter to leave it alone! -->
 !!! warning 
     More documentation will come, but for now, `HorizonsAPI` only has
     humble [docstrings](docstrings)! For more information, take a look at the
@@ -17,3 +16,7 @@ also in-work as part of a separate package: `HorizonsEphemeris.jl`.
     and in docstrings, you'll find a recurring warning which is reiterated here:
     this project is not affiliated with or endorsed by NASA, JPL, Caltech, or any
     other organization!
+</div>
+
+Continue on to [**Getting Started**](getting-started/index.md) to learn more
+about how to use `HorizonsAPI.jl`.

@@ -4,7 +4,12 @@ using HorizonsAPI
 makedocs(
     sitename="HorizonsAPI",
     format=Documenter.HTML(),
-    modules=[HorizonsAPI]
+    modules=[HorizonsAPI],
+    pages=[
+        "Overview" => "index.md",
+        "Examples" => "getting-started/index.md",
+        "Reference" => "reference/index.md",
+    ]
 )
 
 deploydocs(
