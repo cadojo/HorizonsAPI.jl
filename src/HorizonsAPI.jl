@@ -3,7 +3,9 @@ Interact with the JPL HORIZONS REST API.
 
 # Extended Help
 
-$(README)
+## License
+
+$(LICENSE)
 
 ## Exports
 
