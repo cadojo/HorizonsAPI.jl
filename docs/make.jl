@@ -12,9 +12,10 @@ makedocs(
     ]
 )
 
-# Documenter can also automatically deploy documentation to gh-pages.
-# See "Hosting Documentation" and deploydocs() in the Documenter manual
-# for more information.
-#=deploydocs(
-    repo = "<repository url>"
-)=#
+deploydocs(
+    target="build",
+    repo="github.com/cadojo/HorizonsAPI.jl.git",
+    branch="gh-pages",
+    devbranch="main",
+    versions=["stable" => "v^", "manual", "v#.#", "v#.#.#"],
+)
